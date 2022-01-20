@@ -8,6 +8,26 @@ let sumEl = document.querySelector("#sum-el")
 let cardsEl = document.querySelector("#cards-el")
 
 
+let player = {
+    name: "Mozart",
+    chips: 200,
+    getPlayer: function () {
+        return this.name + " R$ " + this.chips
+    },
+    pay: function(value) {
+        this.chips = this.chips - value
+    },
+    receive: function(value) {
+        this.chips = this.chips + value
+    },
+    hasChips: function() {
+        if(this.chips > 0) return true
+        else return false
+    }
+}
+let playerEl = document.querySelector("#player-el")
+
+
 function getRandomCard() {
     card = Math.floor(Math.random() * 13) + 1;
     if(card == 1) return 11
@@ -17,6 +37,7 @@ function getRandomCard() {
 
 
 function startGame() {
+    if (!player.hasChips()) return 
     // Card 1
     let firstCard = getRandomCard()
     // Card 2 
@@ -25,6 +46,9 @@ function startGame() {
     sum = firstCard + secondCard
     isAlive = true
     hasBlackJack = false
+    // Pagando 50 para jogar
+    player.pay(50)
+    playerEl.textContent = player.getPlayer()
     renderGame()
 }
 
@@ -34,7 +58,6 @@ function renderGame() {
     cardsEl.textContent = "Cards: "
     for(let i = 0; i < cards.length; i++)
         cardsEl.textContent += " " + cards[i]
-
 
     sumEl.textContent = "Sum: " + sum
 
@@ -46,6 +69,8 @@ function renderGame() {
         message = "You've got Blackjack!!!"
         hasBlackJack = true
         isAlive = true
+        player.receive(300)
+        playerEl.textContent = player.getPlayer()
     }
     else if (sum > 21) {
         message = "You're out of the game!"
